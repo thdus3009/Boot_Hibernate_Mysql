@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sy.s1.board.BoardService;
-import com.sy.s1.board.notice.NoticeVO;
 import com.sy.s1.util.FileManager;
 import com.sy.s1.util.FilePathGenerator;
 
@@ -21,7 +20,24 @@ public class QnaService implements BoardService{
 	private QnaRepository qnaRepository;
 	
 
-	public Page<QnaVO> boardList(Pageable pageable)throws Exception {
+	public Page<QnaVO> boardList(Pageable pageable, String search, String kind)throws Exception {
+		
+		Page<QnaVO> page = qnaRepository.findByTitleContaining(search, pageable);
+		
+		if(kind==null) {
+			page = qnaRepository.findAll(pageable);
+		}else {
+			
+			if(kind.equals("title")) {
+				page= qnaRepository.findByTitleContaining(search, pageable);
+			}else if(kind.equals("writer")) {
+				page= qnaRepository.findByWriterContaining(search, pageable);
+			}else {
+				page= qnaRepository.findByContentsContaining(search, pageable);
+			}
+			
+		}
+		
 		return qnaRepository.findAll(pageable);
 	}
 	
@@ -29,6 +45,8 @@ public class QnaService implements BoardService{
 		//원본글
 		//ref = 자기자신의 글번호
 		//step, dept 0
+
+		
 		qnaVO = qnaRepository.save(qnaVO);
 		
 		qnaVO.setRef(qnaVO.getNum());

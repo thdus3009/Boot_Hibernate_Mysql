@@ -24,7 +24,7 @@ public class NoticeFileVO {
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)//자동증가(auto-increment) 
 	//mysql은 auto-increment oracle은 시퀀스사용
-	private long fileNum;
+	private Long fileNum;
 	
 	
 //  -FK (Foreign Key)를 가지고 있는 테이블을 Owner(관계의 주인)라고 부른다.

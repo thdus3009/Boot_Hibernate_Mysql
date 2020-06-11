@@ -18,7 +18,7 @@ public class QnaFileVO {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) //1씩 증가
-	private long fileNum;
+	private Long fileNum;
 
 	//join해주는 num은 빼야한다.
 	
