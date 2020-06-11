@@ -24,29 +24,25 @@
 
 	<!-- .............................................................................................. -->
 
-
-		<form class="form-inline" action="./${board}List">
+		<form id="frm" class="form-inline" action="./${board}List">
+			<input type="hidden" name="page" id="p">
 			<div class="input-group input-group-sm col-xs-2">
-				<select value="key" class="form-control col-xs-2" id="sel1"
-					name="kind">
-					<option value="all">전체</option>
-					<option value="title">Title</option>
-					<option value="contents">Contents</option>
-					<option value="writer">Wtiter</option>
-				</select>
+				<select class="form-control" id="sel1" name="kind">
+					<option id="title" value="title">title</option>
+					<option id="writer" value="writer">writer</option>
+					<option id="contents" value="contents">contents</option>
+				</select> 
 			</div>
-		
-
-
-		<div class="input-group input-group-sm col-xs-4">
-			<input type="text" class="form-control" placeholder="Search" name="search">
-			<div class="input-group-btn">
-				<button class="btn btn-default" type="submit">
-					<i class="glyphicon glyphicon-search"></i>
-				</button>
+			
+			<div class="input-group input-group-sm col-xs-4">
+				<input type="text" class="form-control" placeholder="Search" name="search" value="${param.search}">
+				<div class="input-group-btn">
+					<button class="btn btn-default" type="submit">
+						<i class="glyphicon glyphicon-search"></i>
+					</button>
+				</div>
 			</div>
-		</div>
-	</form>
+		</form>
 	
 	<br>
 
@@ -85,19 +81,16 @@
 	
 	<hr>
 	
-		<span><a href="./${board}List?page=0">&lt;&lt;</a></span>
-		<span><a href="./${board}List?page=${page.getNumber()-1}">&lt;</a></span><!-- &lt; : < -->
-		
-		<!-- 현재페이지를 기준으로 뒤에  다른페이지들도 띄우기-->
+			<span><a href="#" class="custompager" title="0">&lt;&lt;</a></span>
+			<span><a href="#" class="custompager" title="${page.number-1}"> &lt;</a></span>
 			<c:forEach begin="${page.number}" end="${page.number+4}" var="i">
 				
 				<c:if test="${i lt page.totalPages}">
-					<a href="./${board}List?page=${i}">${i+1}</a>
+					<a href="#" class="custompager" title="${i}">${i+1}</a>
 				</c:if>
 			</c:forEach>
-			
-		<span><a href="./${board}List?page=${page.getNumber()+1}">&gt;</a></span><!-- &gt; : > -->
-		<span><a href="./${board}List?page=${page.totalPages-1}">&gt;&gt;</a></span>
+			<span><a href="#" class="custompager" title="${page.number+1}">&gt;</a></span>
+			<span><a href="#" class="custompager" title="${page.totalPages-1}">&gt;&gt;</a></span>
 		
 	</div>
 	
@@ -124,6 +117,35 @@
 	<hr>
 	<a href="./${board}Write" class="btn btn-danger">Write</a>
 	</div>
+	
+	<script type="text/javascript">
+			$(".custompager").click(function(){
+				var page=$(this).attr("title");
+				$("#p").val(page);
+				$("#frm").submit();
+			});
+		
+		
+			var kind = '${param.kind}';
+			if(kind == ''){
+				$("#title").prop("selected", true);
+			}else {
+				$("#"+kind).prop("selected", true);
+			}
+			
+		
+		
+		
+		
+			var result = '${result}';
+			if(result != '') {
+				if(result == 1) {
+					alert("게시글 쓰기 성공");
+				} else {
+					alert("게시글 쓰기 실패");
+				}
+			}
+	</script>
 
 </body>
 </html>
