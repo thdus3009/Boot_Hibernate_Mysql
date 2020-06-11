@@ -9,6 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface QnaRepository extends JpaRepository<QnaVO, Long> {
 
+	public int countByTitleContaining(String search);
+	public int countByWriterContaining(String search);
+	public int countByContentsContaining(String search);
 	
 	//title검색
 	Page<QnaVO> findByTitleContaining(String search, Pageable pageable);

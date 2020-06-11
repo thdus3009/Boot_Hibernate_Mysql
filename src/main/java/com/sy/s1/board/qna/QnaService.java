@@ -25,19 +25,29 @@ public class QnaService implements BoardService{
 
 	public Page<QnaVO> boardList(Pager pager)throws Exception {
 		
+		// return qnaRepository.findByNumGreaterThanOrderByNumDesc(0);
+
 		pager.makeRow();
-		Pageable pageable = PageRequest.of((int)pager.getStartRow(), pager.getPerPage(), Sort.by("ref").descending().and(Sort.by("step").ascending()));
-		
-		Page<QnaVO> page=null;
-		if(pager.getKind().equals("title")) {
+
+		Pageable pageable = PageRequest.of((int) pager.getStartRow(), pager.getPerPage(),
+				Sort.by("ref").descending().and(Sort.by("step").ascending()));
+
+		Page<QnaVO> page = null;
+
+		if (pager.getKind() == null || pager.getKind().equals("title")) {
+
 			page = qnaRepository.findByTitleContaining(pager.getSearch(), pageable);
-		}else if(pager.getKind().equals("contents")) {
+
+		} else if (pager.getKind().equals("contents")) {
+
 			page = qnaRepository.findByContentsContaining(pager.getSearch(), pageable);
-		}else {
+
+		} else {
+
 			page = qnaRepository.findByWriterContaining(pager.getSearch(), pageable);
+
 		}
-		
-		
+
 		return page;
 	}
 	
