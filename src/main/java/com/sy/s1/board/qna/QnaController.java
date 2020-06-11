@@ -68,6 +68,7 @@ public class QnaController {
 	public ModelAndView boardWrite(ModelAndView mv,QnaVO qnaVO) throws Exception {
 		
 		qnaVO = qnaService.boardWrite(qnaVO);
+		mv.setViewName("redirect:./qnaList");
 		
 		return mv;
 	}
