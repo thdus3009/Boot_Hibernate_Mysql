@@ -3,7 +3,9 @@ package com.sy.s1.board.qna;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.sy.s1.board.BoardService;
 import com.sy.s1.util.FileManager;
 import com.sy.s1.util.FilePathGenerator;
+import com.sy.s1.util.Pager;
 
 @Service
 @Transactional(rollbackFor= Exception.class)
@@ -20,25 +23,22 @@ public class QnaService implements BoardService{
 	private QnaRepository qnaRepository;
 	
 
-	public Page<QnaVO> boardList(Pageable pageable, String search, String kind)throws Exception {
+	public Page<QnaVO> boardList(Pager pager)throws Exception {
 		
-		Page<QnaVO> page = qnaRepository.findByTitleContaining(search, pageable);
+		pager.makeRow();
+		Pageable pageable = PageRequest.of((int)pager.getStartRow(), pager.getPerPage(), Sort.by("ref").descending().and(Sort.by("step").ascending()));
 		
-		if(kind==null) {
-			page = qnaRepository.findAll(pageable);
+		Page<QnaVO> page=null;
+		if(pager.getKind().equals("title")) {
+			page = qnaRepository.findByTitleContaining(pager.getSearch(), pageable);
+		}else if(pager.getKind().equals("contents")) {
+			page = qnaRepository.findByContentsContaining(pager.getSearch(), pageable);
 		}else {
-			
-			if(kind.equals("title")) {
-				page= qnaRepository.findByTitleContaining(search, pageable);
-			}else if(kind.equals("writer")) {
-				page= qnaRepository.findByWriterContaining(search, pageable);
-			}else {
-				page= qnaRepository.findByContentsContaining(search, pageable);
-			}
-			
+			page = qnaRepository.findByWriterContaining(pager.getSearch(), pageable);
 		}
 		
-		return qnaRepository.findAll(pageable);
+		
+		return page;
 	}
 	
 	public QnaVO boardWrite(QnaVO qnaVO)throws Exception {
