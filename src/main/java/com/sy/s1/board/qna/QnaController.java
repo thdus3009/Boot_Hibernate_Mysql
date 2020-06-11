@@ -73,7 +73,7 @@ public class QnaController {
 	//ref를 다시 글번호로 대체 (update)
 	@PostMapping("qnaWrite")
 	public ModelAndView boardWrite(ModelAndView mv,QnaVO qnaVO) throws Exception {
-		
+		qnaVO.setHit(0L);
 		qnaVO = qnaService.boardWrite(qnaVO);
 		mv.setViewName("redirect:./qnaList");
 		
