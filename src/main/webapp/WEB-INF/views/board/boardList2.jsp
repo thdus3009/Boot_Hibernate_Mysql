@@ -21,12 +21,11 @@
 
 	<div class="container">
 		<h2>${board}List</h2>
-	
+
 	<!-- .............................................................................................. -->
 
 
-		<form id="frm" class="form-inline" action="./${board}List">
-		<input type="hidden" name="page" id="p">
+		<form class="form-inline" action="./${board}List">
 			<div class="input-group input-group-sm col-xs-2">
 				<select value="key" class="form-control col-xs-2" id="sel1"
 					name="kind">
@@ -86,16 +85,19 @@
 	
 	<hr>
 	
-			<span><a href="#" class="pager" title="0">&lt;&lt;</a></span>
-			<span><a href="#" class="pager" title="${page.number-1}"> &lt;</a></span><!-- &lt; : < -->
+		<span><a href="./${board}List?page=0">&lt;&lt;</a></span>
+		<span><a href="./${board}List?page=${page.getNumber()-1}">&lt;</a></span><!-- &lt; : < -->
+		
+		<!-- 현재페이지를 기준으로 뒤에  다른페이지들도 띄우기-->
 			<c:forEach begin="${page.number}" end="${page.number+4}" var="i">
 				
 				<c:if test="${i lt page.totalPages}">
-					<a href="#" class="pager" title="${i}">${i+1}</a>
+					<a href="./${board}List?page=${i}">${i+1}</a>
 				</c:if>
 			</c:forEach>
-			<span><a href="#" class="pager" title="${page.number+1}">&gt;</a></span><!-- &gt; : > -->
-			<span><a href="#" class="pager" title="${page.totalPages-1}">&gt;&gt;</a></span>
+			
+		<span><a href="./${board}List?page=${page.getNumber()+1}">&gt;</a></span><!-- &gt; : > -->
+		<span><a href="./${board}List?page=${page.totalPages-1}">&gt;&gt;</a></span>
 		
 	</div>
 	
@@ -122,16 +124,6 @@
 	<hr>
 	<a href="./${board}Write" class="btn btn-danger">Write</a>
 	</div>
-
-
-	<script type="text/javascript">
-		$(".pager").click(function(){
-			var page=$(this).attr("title");
-			
-		});
-	</script>
-
-
 
 </body>
 </html>
