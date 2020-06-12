@@ -31,6 +31,35 @@ public class QnaController {
 		return "qna";
 	}
 	
+	@GetMapping("qnaUpdate")
+	public void boardUpdate(QnaVO qnaVO)throws Exception {//qnaVO로 글번호받기
+		ModelAndView mv = new ModelAndView();
+		
+		qnaVO = qnaService.getSelectOne(qnaVO);
+		mv.addObject("boardVO", qnaVO);
+		mv.addObject("path", "Update");
+		mv.setViewName("board/boardWrite");
+	}
+	@PostMapping("qnaUpdate")
+	public ModelAndView boardUpdate(ModelAndView mv, QnaVO qnaVO, MultipartFile [] files)throws Exception {
+		
+		qnaVO = qnaService.boardUpdate(qnaVO, files);
+		
+		return mv;
+	}
+	
+	@GetMapping("qnaDelete") //PostMapping 해도 상관x
+	public ModelAndView boardDelete(QnaVO qnaVO)throws Exception{
+		ModelAndView mv = new ModelAndView();
+		
+		boolean result = qnaService.boardDelete(qnaVO);
+		if(!result) {
+			
+		}
+		mv.setViewName("redirect:./qnaList");
+		return mv;
+	}
+	
 	//list
 	@GetMapping("qnaList")
 	public ModelAndView boardList(Pager pager)throws Exception{ 
@@ -74,9 +103,9 @@ public class QnaController {
 	
 	//ref를 다시 글번호로 대체 (update)
 	@PostMapping("qnaWrite")
-	public ModelAndView boardWrite(ModelAndView mv, QnaVO qnaVO) throws Exception {
+	public ModelAndView boardWrite(ModelAndView mv, QnaVO qnaVO, MultipartFile [] files) throws Exception {
 
-		qnaVO = qnaService.boardWrite(qnaVO);
+		qnaVO = qnaService.boardWrite(qnaVO, files);
 		mv.setViewName("redirect:./qnaList");
 		
 		return mv;

@@ -42,6 +42,20 @@
 		$("#f").append('<input type="file" name="files">');
 		
 	});
+
+	// 글쓰기 자동 삽입
+	$(function() {
+
+		var memberId = $('#memberId').data("id");
+		console.log(memberId);
+		
+		if(memberId != 'none') {
+
+			$('#writer').val(memberId);
+		}
+
+		$('#title').focus();
+	});
 	
 </script>
 

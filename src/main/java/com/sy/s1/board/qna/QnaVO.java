@@ -32,6 +32,6 @@ public class QnaVO extends BoardVO{
 	private long depth;
 	
 	@OneToMany(mappedBy = "qnaVO" , fetch = FetchType.LAZY , cascade = CascadeType.ALL)//부모가 지워지면 같이 지워진다.(cascade)
-	private List<QnaFileVO> qnaFileVOs;
+	private List<QnaFileVO> boardFiles;
 	
 }

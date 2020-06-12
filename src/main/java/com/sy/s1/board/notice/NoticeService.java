@@ -65,7 +65,7 @@ public class NoticeService implements BoardService{
 		}
 		
 		System.out.println("arsize : " + ar.size());
-		noticeVO.setNoticeFileVOs(ar);
+		noticeVO.setBoardFiles(ar);
 		noticeFileVO.setNoticeVO(noticeVO);
 		noticeVO = noticeRepository.save(noticeVO);		
 		return noticeVO;

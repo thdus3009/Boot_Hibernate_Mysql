@@ -1,5 +1,7 @@
 package com.sy.s1.board.qna;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +27,29 @@ public class QnaService implements BoardService{
 
 	@Autowired
 	private QnaRepository qnaRepository;
-	
+	@Autowired
+	private FilePathGenerator filePathGenerator;
+	@Autowired
+	private FileManager fileManager;
 
+	@Value("${board.qna.filePath}")//key값
+	private String filepath;//appllication.properties참고
+	
+	//update (첨부파일은 놔두고 나머지 내용만 수정)
+	public QnaVO boardUpdate(QnaVO qnaVO, MultipartFile [] files)throws Exception {
+		
+		qnaRepository.qnaUpdate(qnaVO.getTitle(), qnaVO.getContents(), qnaVO.getNum());
+		
+		return qnaVO;
+	}
+	
+	//delete
+	public boolean boardDelete(QnaVO qnaVO)throws Exception {
+		qnaRepository.deleteById(qnaVO.getNum());
+		return qnaRepository.existsById(qnaVO.getNum());
+	}
+
+	
 	public Page<QnaVO> boardList(Pager pager)throws Exception {
 		
 		// return qnaRepository.findByNumGreaterThanOrderByNumDesc(0);
@@ -60,11 +83,36 @@ public class QnaService implements BoardService{
 	}
 	
 	//"원본글"
-	public QnaVO boardWrite(QnaVO qnaVO)throws Exception {
+	public QnaVO boardWrite(QnaVO qnaVO, MultipartFile [] files)throws Exception {
 		//ref = 자기자신의 글번호
 		//step, dept 0
-
 		
+//		qnaVO.getRef();
+//		qnaVO.getDepth();
+//		qnaVO.getStep();
+//		qnaVO.getHit();
+		
+		List<QnaFileVO> list = new ArrayList<>();
+		
+		//저장할 폴더 경로
+		File file = filePathGenerator.getUserResouceLoader(filepath);
+		
+		for(MultipartFile multipartFile : files) {
+			if(multipartFile.getSize()<1) {
+				continue;
+			}
+			QnaFileVO qnaFileVO = new QnaFileVO();
+			String fileName = fileManager.saveFileCopy(multipartFile, file);
+			qnaFileVO.setFileName(fileName);
+			qnaFileVO.setOriName(multipartFile.getOriginalFilename());
+			qnaFileVO.setQnaVO(qnaVO);
+			
+			list.add(qnaFileVO);
+		}
+		
+		qnaVO.setBoardFiles(list);
+		
+		//
 		qnaVO = qnaRepository.save(qnaVO);
 		
 		qnaVO.setRef(qnaVO.getNum());
@@ -111,7 +159,8 @@ public class QnaService implements BoardService{
 	//hit(조회수) - 매개변수로 번호를 받거나 QnaVO로 받기
 	public QnaVO getSelectOne(QnaVO qnaVO) throws Exception {
 		//조회수
-		qnaVO = qnaRepository.findById(qnaVO.getNum()).get();
+		//qnaVO = qnaRepository.findById(qnaVO.getNum()).get();
+		qnaVO = qnaRepository.qnaSelect(qnaVO.getNum());
 		qnaVO.setHit(qnaVO.getHit()+1);
 		
 		//selectOne
