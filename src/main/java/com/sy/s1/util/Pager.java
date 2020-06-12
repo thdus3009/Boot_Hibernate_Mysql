@@ -1,183 +1,123 @@
 package com.sy.s1.util;
 
+import org.springframework.stereotype.Component;
 
+import lombok.Data;
+
+//=========================
+//사용
+//
+//pager.setPerPage(16);
+//pager.makeRow();
+//int totalNum = marketDAO.marketTotalNum(pager);
+//pager.makePage(totalNum);
+//return marketDAO.marketList(pager);
+//
+//=========================
+
+@Data
+@Component
 public class Pager {
-
-	private Long curPage;
-	private Integer perPage;
+//curpage > page //purpage > size
 	
-	private long startRow;
-	private long lastRow;
+	private Integer page;
+	private Integer size = 10;
 	
-	private long totalPage;
-	private long totalBlock; //1~5페이지 > 1블럭 //총30페이지 > 6블럭
-	private long curBlock;
+	private Integer perBlock = 5;
+	private Integer curBlock;
 	
-	private long startNum; //블럭 시작 번호 1
-	private long lastNum; //블럭 끝 번호 5
+	private Integer startRow;
+	private Integer lastRow;
+	
+	private Integer totalPage;
+	private Integer totalBlock;
+	
+	private Integer startNum;
+	private Integer lastNum;
 	
 	private String kind;
 	private String search;
-	private String bar;
+
 	
-
-
-	//페이지당 10개 출력 > perpage=10
+	
+	// 현재 페이지에서 보여줘야하는 데이터 시작 Row / 끝 Row
+	// 예) 1p = 1 ~ 10 / 2p = 11 ~ 20 
 	public void makeRow() {
-		this.startRow=this.getCurPage()-1;
-		this.lastRow=this.getCurPage()*this.getPerPage();
+		this.startRow = this.getPage() - 1; //1이오면 0으로 바꾸려는 작업
+		//this.lastRow = this.getCurPage() * this.getPerPage();		// mysql에서는 사용할 필요 X
 	}
-	//다음페이지 생성
-	public void makePage(long totalCount) {
-		//1. totalCount : 전체 글의 갯수
-		//2. totalCount로 totalPage 계산
-		this.totalPage =  totalCount/this.getPerPage();
-		if(totalCount%this.getPerPage()!=0) {
-			this.totalPage++;
-		}
+
+	// 페이지 갯수 만들기 (1~5, 6~10 ...)
+	public void makePage(int totalPage) {
+		// totalCount로 totalPage 계산
+		// 예시 ) 게시글 전체가 105개 / 페이지당 게시글 10개  = 10p,
+		// 나누어 떨어지는게 아니면 1페이지 더 필요하므로 총 11p
+
+		/*
+		 * totalPage = totalCount/this.size; if(totalCount%this.size != 0) {
+		 * totalPage++; }
+		 */
 		
+		this.setTotalPage(totalPage);
 		
-		//3. totalPage -> totalBlock 계산
-		long perBlock = 5L;// 블록당 5개씩 설정
-		
+		// totalPage로 totalBlock 계산
+		// 블록은 한번에 보여줄 페이지탭의 갯수
+		// 예시 ) 전체 총 11p / 노출 페이지 5p = 2block
+		// 나누어 떨어지는게 아니면 1block 더 필요하므로 총 3block
 		this.totalBlock = totalPage/perBlock;
-		if(totalPage % perBlock !=0) {
+		if(totalPage%perBlock != 0) {
 			this.totalBlock++;
 		}
 		
-		//4. curpage ->curBlock찾기(몇번째 블록인가) curpage 1-5 curblock 1, curpage 6-10 curblock 2
-		this.curBlock = this.curPage/perBlock;
-		if(this.curPage % perBlock !=0) {
+		// 현재 블록 구하기
+		// 예시 ) 현재 페이지가 11p 중 7p, / 블록당 5p
+		// 현재페이지가 블록 갯수로 나눠떨어지지 않으면 + 1block 현재 2block
+		this.curBlock = this.page/this.perBlock;
+		if(this.page%this.perBlock != 0) {
 			this.curBlock++;
 		}
 		
-		//5. curBlock startnum,lastnum계산
-		this.startNum = (this.curBlock-1)*perBlock+1;
-		this.lastNum = curBlock*perBlock;
-		
-		//마지막 번호면 거기서 끊어주기
-		if(this.curBlock == this.totalBlock) { // 5개씩 끊지만 글 갯수에 맞게되도록
+		// startNum = 5 * 1 + 1 = 6;
+		// lastNum = 5 * 2 = 10;
+		// 현재 노출되는 페이지 : 6 7 8 9 10
+		// block에서 보여줄 pageNum : 6 ~ 10
+		this.startNum = this.perBlock*(this.curBlock-1) + 1;
+		this.lastNum = this.perBlock*this.curBlock;
+		if(curBlock == this.totalBlock) {
 			this.lastNum = this.totalPage;
 		}
 	}
 	
 	
-	
-	
-	
-	
-	
-	public Long getCurPage() {
-		if(this.curPage==null || this.curPage==0) {
-			this.curPage=1L;
-		}
-		
-		return curPage;
+
+	public Integer getPage() {
+		if(this.page == null || this.page == 0)
+			this.page = 1;
+		return this.page;
 	}
 	
-	public void setCurPage(Long curPage) {
-		this.curPage = curPage;
+	
+	public Integer getSize() {
+		if(this.size == null || this.size == 0)
+			this.setSize(10);
+		return size;
 	}
 	
-	public Integer getPerPage() {
-		if(this.perPage==null || this.perPage==0) {
-			this.perPage=10;
-		}
-		return perPage;
-	}
-	
-	public void setPerPage(Integer perPage) {
-		this.perPage = perPage;
-	}
-	
-	public long getStartRow() {
-		return startRow;
-	}
-	
-	public void setStartRow(long startRow) {
-		this.startRow = startRow;
-	}
-	
-	public long getLastRow() {
-		return lastRow;
-	}
-	
-	public void setLastRow(long lastRow) {
-		this.lastRow = lastRow;
-	}
-	
-	public long getTotalPage() {
-		return totalPage;
-	}
-	
-	public void setTotalPage(long totalPage) {
-		this.totalPage = totalPage;
-	}
-	
-	public long getTotalBlock() {
-		return totalBlock;
-	}
-	
-	public void setTotalBlock(long totalBlock) {
-		this.totalBlock = totalBlock;
-	}
-	
-	public long getCurBlock() {
-		return curBlock;
-	}
-	
-	public void setCurBlock(long curBlock) {
-		this.curBlock = curBlock;
-	}
-	
-	public long getStartNum() {
-		return startNum;
-	}
-	
-	public void setStartNum(long startNum) {
-		this.startNum = startNum;
-	}
-	
-	public long getLastNum() {
-		return lastNum;
-	}
-	
-	public void setLastNum(long lastNum) {
-		this.lastNum = lastNum;
-	}
 	
 
 	
-	
-	
-	
 	public String getKind() {
-		
-		 if(this.kind== null) {
-			 this.kind="title";
-		 }
+		if(this.kind==null || this.kind.equals("")) {
+			this.kind="title";
+		}
 		return kind;
 	}
 	
-	public void setKind(String kind) {
-		this.kind = kind;
-	}
-	
 	public String getSearch() {
-		if(this.search == null) {
-			this.search= "";
-		}
+		
+		if(this.search == null)
+			this.search = "";
+		
 		return search;
-	}
-	
-	public void setSearch(String search) {
-		this.search = search;
-	}
-	
-	public String getBar() {
-		return bar;
-	}
-	public void setBar(String bar) {
-		this.bar = bar;
 	}
 }

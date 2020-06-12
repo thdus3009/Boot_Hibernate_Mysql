@@ -32,11 +32,15 @@ class QnaRepositoryTest {
 	
 	@Test
 	public void insertTest3()throws Exception {
-		for (int i=0; i<100; i++) {
+		for (int i=0; i<60; i++) {
 			QnaVO qnaVO = new QnaVO();
 			qnaVO.setTitle("title"+i);
 			qnaVO.setContents("contents"+i);
 			qnaVO.setWriter("writer"+i);
+			qnaVO.setHit(0L);
+			qnaVO.setDepth(0L);
+			qnaVO.setStep(0L);
+			qnaVO.setRef((long)i);
 			qnaVO = qnaRepository.save(qnaVO);
 		}
 		

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sy.s1.board.BoardService;
+import com.sy.s1.board.qna.QnaVO;
 import com.sy.s1.member.MemberFileVO;
 import com.sy.s1.util.FileManager;
 import com.sy.s1.util.FilePathGenerator;
@@ -70,35 +71,25 @@ public class NoticeService implements BoardService{
 		return noticeVO;
 	}
 	
-	public List<NoticeVO> getselectList(Pager pager) throws Exception{
-		//Pageable pageable, String search
+	public Page<NoticeVO> getselectList(Pager pager) throws Exception{
 		
-		List<NoticeVO> ar = new ArrayList<NoticeVO>();
+		pager.makeRow();
 		
-		pager.makeRow(); //몇번페이지인지
-		pager.makePage(noticeRepository.countByTitleContaining(pager.getSearch()));
-																//	, 한페이지당 몇개씩 가져올건지 , 정렬방식
-		Pageable pageable = PageRequest.of((int)pager.getStartRow(), pager.getPerPage(), Sort.Direction.DESC,"num"); //정렬 : Sort.Direction.DESC,"num"
-		
-		
-		if(pager.getKind().equals("writer")) {
-			
-			 ar = noticeRepository.findByTitleContaining(pager.getSearch(), pageable);
-			 pager.makePage(noticeRepository.countByWriterContaining(pager.getSearch()));
-			 
-			 
+		Pageable pageable = PageRequest.of(pager.getStartRow(), pager.getSize(), Sort.Direction.DESC, "num");
+
+		Page<NoticeVO> page=null;
+		if(pager.getKind().equals("title")) {
+			page = noticeRepository.findByTitleContaining(pager.getSearch(), pageable);
 		}else if(pager.getKind().equals("contents")) {
-			
-			ar = noticeRepository.findByTitleContaining(pager.getSearch(), pageable);
-			pager.makePage(noticeRepository.countByContentsContaining(pager.getSearch()));
-			
+			page = noticeRepository.findByContentsContaining(pager.getSearch(), pageable);
 		}else {
-			
-			ar = noticeRepository.findByTitleContaining(pager.getSearch(), pageable);
-			pager.makePage(noticeRepository.countByTitleContaining(pager.getSearch()));
+			page = noticeRepository.findByWriterContaining(pager.getSearch(), pageable);
 		}
 		
-		return ar;
+		pager.makePage(page.getTotalPages());
+		
+		
+		return page;
 		//return noticeRepository.findByTitleContaining(pager.getSearch(), pageable);
 	}
 	

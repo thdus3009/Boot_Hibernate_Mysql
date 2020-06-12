@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.sy.s1.board.notice.NoticeVO;
 import com.sy.s1.util.Pager;
 
 @Controller
@@ -45,7 +46,7 @@ public class QnaController {
 		System.out.println(page.getContent().size());
 		System.out.println("한페이지에 몇개의 정보를 출력하는지 : "+page.getSize());
 		System.out.println("TotalElements(글의 갯수) : "+page.getTotalElements());
-		System.out.println("TotalPages(페이지 갯수) : "+page.getTotalPages());
+		System.out.println("TotalPages(전체 페이지 갯수) : "+page.getTotalPages());
 		System.out.println("Next(다음페이지가 존재하는지 확인) : "+page.hasNext());
 		System.out.println("Previous(이전페이지가 존재하는지 확인) : "+page.hasPrevious());
 		System.out.println("number(page번호) : "+page.getNumber()); //page.number() == page.getNumber()
@@ -54,6 +55,7 @@ public class QnaController {
 		System.out.println("Last(마지막페이지인지) : "+page.isLast());		
 		
 		mv.addObject("page", page);
+		mv.addObject("pager", pager);
 		mv.setViewName("board/boardList2");
 		//page꾸려주는 방식은  notice방법(boardList)과 qna방법(boardList2) 중 선택해서 하면된다.
 		return mv;
@@ -72,12 +74,45 @@ public class QnaController {
 	
 	//ref를 다시 글번호로 대체 (update)
 	@PostMapping("qnaWrite")
-	public ModelAndView boardWrite(ModelAndView mv,QnaVO qnaVO) throws Exception {
-		qnaVO.setHit(0L);
+	public ModelAndView boardWrite(ModelAndView mv, QnaVO qnaVO) throws Exception {
+
 		qnaVO = qnaService.boardWrite(qnaVO);
 		mv.setViewName("redirect:./qnaList");
 		
 		return mv;
 	}
+	
+	//답글 - 매개변수에서 정보를 받아온다.
+	@GetMapping("qnaReply")
+	public ModelAndView boardReply(QnaVO qnaVO)throws Exception{
+		ModelAndView mv = new ModelAndView();
+		//원래 있는 부모의 num을 받아와야하기 때문에 new QnaVO()가 아닌 그냥 qnaVO로 써야한다.
+		mv.addObject("boardVO", qnaVO);
+		mv.addObject("path", "Reply");
+		mv.setViewName("board/boardWrite");
+		return mv;
+	}
+	
+	@PostMapping("qnaReply")
+	public ModelAndView boardReply(ModelAndView mv, QnaVO qnaVO)throws Exception {
+		QnaVO childVO = qnaService.boardReply(qnaVO);
+
+		mv.setViewName("redirect:./qnaList");
+		
+		return mv;
+		
+	}
+	
+	// + hit (조회수)
+	@GetMapping("qnaSelect")
+	public ModelAndView getSelectOne(ModelAndView mv, QnaVO qnaVO)throws Exception {
+		qnaVO = qnaService.getSelectOne(qnaVO);
+		mv.addObject("vo", qnaVO);
+		mv.setViewName("board/boardSelect");
+		return mv;
+	}
+
+	
+	
 	
 }

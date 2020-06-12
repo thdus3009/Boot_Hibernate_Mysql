@@ -27,7 +27,7 @@ public class BoardVO {
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
-	private Long num;
+	private long num;
 	@Column
 	private String title;
 	@Column
@@ -39,7 +39,7 @@ public class BoardVO {
 	@UpdateTimestamp
 	private Date regDate;
 	@Column
-	private Long hit;
+	private long hit;
 	
 	
 	

@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface QnaRepository extends JpaRepository<QnaVO, Long> {
-
+	//답글 (ref를 찾는데 step이 더 큰것)
+	List<QnaVO> findByRefAndStepGreaterThan(long ref, long step);
+	
 	public int countByTitleContaining(String search);
 	public int countByWriterContaining(String search);
 	public int countByContentsContaining(String search);

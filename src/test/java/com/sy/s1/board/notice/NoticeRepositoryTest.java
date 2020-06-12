@@ -111,9 +111,9 @@ class NoticeRepositoryTest {
 		}
 	}
 	
-	//@Test
+	@Test
 	public void insertTest2()throws Exception {
-		for (int i=0; i<90; i++) {
+		for (int i=0; i<10; i++) {
 			noticeVO = new NoticeVO();
 			noticeVO.setTitle("title"+i);
 			noticeVO.setContents("contents"+i);

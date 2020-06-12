@@ -61,7 +61,15 @@
 		<c:forEach items="${page.content}" var="vo">
 			<tr>
 				<td>${vo.num}</td>
-				<td><a href="${board}Select?num=${vo.num}">${vo.title}</a></td>
+				
+				<td>
+				<c:catch>
+					<c:forEach begin="1" end="${vo.depth}">- </c:forEach>
+				</c:catch>
+				
+				<a href="${board}Select?num=${vo.num}">${vo.title}</a>
+				</td>
+				
 				<td>${vo.writer}</td>
 				<td>${vo.regDate}</td>
 				<td>${vo.hit}</td>
@@ -81,40 +89,23 @@
 	
 	<hr>
 	
-			<span><a href="#" class="custompager" title="0">&lt;&lt;</a></span>
-			<span><a href="#" class="custompager" title="${page.number-1}"> &lt;</a></span>
-			<c:forEach begin="${page.number}" end="${page.number+4}" var="i">
-				
-				<c:if test="${i lt page.totalPages}">
-					<a href="#" class="custompager" title="${i}">${i+1}</a>
-				</c:if>
+		<ul class="pagination">
+			<c:if test="${pager.curBlock>1}">
+				<li><a href="#" class="custompager" title="${pager.startNum-1}">이전</a></li>
+			</c:if>
+			
+			<c:forEach begin="${pager.startNum}" end="${pager.lastNum}" var="p">
+				<li><a href="#" class="custompager" title="${p}">${p}</a></li>
 			</c:forEach>
-			<span><a href="#" class="custompager" title="${page.number+1}">&gt;</a></span>
-			<span><a href="#" class="custompager" title="${page.totalPages-1}">&gt;&gt;</a></span>
+			
+			<c:if test="${pager.curBlock<pager.totalBlock}">
+				<li><a href="#" class="custompager" title="${pager.lastNum+1}">다음</a></li>
+			</c:if>
+		</ul>
 		
 	</div>
 	
-	<div>
-	
-		<hr>
-		<!-- 이전페이지 -->
-		<c:if test="${page.isFirst() ne true}">
-		<a href="./${board}List?page=${page.getNumber()-1}">[이전]</a>
-		</c:if>
-		
-		<!-- 현재페이지 표시 방법 2가지 -->
-		<span>${param.page+1}</span>
-		<%-- <span>${page.getNumber()+1}</span> --%>
-		
-		<!-- 다음페이지 -->
-		<c:if test="${not page.isLast()}">
-		<a href="./${board}List?page=${page.getNumber()+1}">[다음]</a>
-		</c:if>
-		
-		
-	</div>
 
-	<hr>
 	<a href="./${board}Write" class="btn btn-danger">Write</a>
 	</div>
 	
@@ -146,6 +137,8 @@
 				}
 			}
 	</script>
+
+
 
 </body>
 </html>
