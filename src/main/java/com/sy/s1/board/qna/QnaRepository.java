@@ -28,8 +28,8 @@ public interface QnaRepository extends JpaRepository<QnaVO, Long> {
 	//update JPQL이용 - (JPQL은 쿼리를 따로 입력하기 때문에 메서드명이 내마음대로 입력해도 된다.)
 	@Transactional
 	@Modifying
-	@Query(value = "update QnaVO q set q.title=?1, q.contents=?2 where q.num=?3") //3번인덱스
-	void qnaUpdate(String title, String contents, Long num); 
+	@Query(value = "update QnaVO q set q.title=?1, q.contents=?2, q.writer=?3  where q.num=?4") //3번인덱스
+	void qnaUpdate(String title, String contents, String writer, Long num); 
 	
 	@Transactional
 	@Modifying
