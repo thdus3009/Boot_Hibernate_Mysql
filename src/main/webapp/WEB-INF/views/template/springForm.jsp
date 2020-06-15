@@ -15,7 +15,7 @@
 	  
 	  <div class="form-group">
 	    <label for="writer">Writer:</label>
-	    <form:input path="writer" type="text" class="form-control" id="writer" name="writer" readonly="readonly"/>
+	    <form:input path="writer" type="text" class="form-control" id="writer" name="writer" />
 	  </div>
 	  
 	  <div class="form-group">
