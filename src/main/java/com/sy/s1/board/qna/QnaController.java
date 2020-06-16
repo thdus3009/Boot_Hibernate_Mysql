@@ -32,13 +32,15 @@ public class QnaController {
 	}
 	
 	@GetMapping("qnaUpdate")
-	public void boardUpdate(QnaVO qnaVO)throws Exception {//qnaVO로 글번호받기
+	public ModelAndView boardUpdate(QnaVO qnaVO)throws Exception {//qnaVO로 글번호받기
 		ModelAndView mv = new ModelAndView();
 		
 		qnaVO = qnaService.getSelectOne(qnaVO);
 		mv.addObject("boardVO", qnaVO);
 		mv.addObject("path", "Update");
 		mv.setViewName("board/boardWrite");
+		
+		return mv;
 	}
 	@PostMapping("qnaUpdate")
 	public ModelAndView boardUpdate(ModelAndView mv, QnaVO qnaVO, MultipartFile [] files)throws Exception {
@@ -142,6 +144,15 @@ public class QnaController {
 	}
 
 	
-	
+	@GetMapping("/message/messageResult")
+	public ModelAndView message(String result, String path) throws Exception {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("result", result);
+		mv.addObject("path", path);
+		mv.setViewName("common/result");
+		return mv;
+	}
+
+
 	
 }
