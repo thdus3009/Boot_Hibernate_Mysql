@@ -49,7 +49,6 @@ public class QnaService implements BoardService{
 		return qnaRepository.existsById(qnaVO.getNum());
 	}
 
-	
 	public Page<QnaVO> boardList(Pager pager)throws Exception {
 		
 		// return qnaRepository.findByNumGreaterThanOrderByNumDesc(0);
