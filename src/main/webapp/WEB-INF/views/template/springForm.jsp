@@ -19,8 +19,12 @@
 	  
 	  <div class="form-group">
 	    <label for="writer">Writer:</label>
-
+<<<<<<< HEAD
+	    <form:input path="writer" type="text" class="form-control" id="writer" name="writer"/>
+	    
+=======
 	    <form:input path="writer" type="text" class="form-control" id="writer" name="writer" readonly="readonly"/>
+>>>>>>> parent of a1b4d62... interceptor
 	  </div>
 	  
 	  <div class="form-group">
