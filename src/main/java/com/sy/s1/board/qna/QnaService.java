@@ -38,7 +38,7 @@ public class QnaService implements BoardService{
 	//update (첨부파일은 놔두고 나머지 내용만 수정)
 	public QnaVO boardUpdate(QnaVO qnaVO, MultipartFile [] files)throws Exception {
 		
-		qnaRepository.qnaUpdate(qnaVO.getTitle(), qnaVO.getWriter(), qnaVO.getContents(), qnaVO.getNum());
+		qnaRepository.qnaUpdate(qnaVO.getTitle(), qnaVO.getContents(), qnaVO.getNum());
 		
 		return qnaVO;
 	}

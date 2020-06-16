@@ -19,9 +19,9 @@
 	  
 	  <div class="form-group">
 	    <label for="writer">Writer:</label>
-
-
-	    <form:input path="writer" type="text" class="form-control" id="writer" name="writer" readonly="readonly"/>
+	    <form:input path="writer" type="text" class="form-control" id="writer"/>
+	  	<%-- <input type="hidden" class="form-control" value="${member.id}" name="writer"> --%>
+	  	<form:errors path="writer"></form:errors>
 	  </div>
 	  
 	  <div class="form-group">
